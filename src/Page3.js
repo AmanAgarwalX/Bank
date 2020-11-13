@@ -2,9 +2,11 @@ import { Button, Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import Axios from "axios";
 import { push } from "connected-react-router";
+import _ from "lodash";
 import { withSnackbar } from "notistack";
 import React, { useState } from "react";
 import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 import Loading from "./Loading";
 import { ACTIONS } from "./utils/actions";
 import { addAccount, form, steps } from "./utils/helpers";
@@ -58,6 +60,7 @@ export default withSnackbar(
     (state) => ({
       user: state.app.user,
       account: state.app.account,
+      accounts: state.app.accounts,
     }),
     (dispatch) => ({
       setUser: (data) =>
@@ -86,7 +89,11 @@ export default withSnackbar(
       setAccounts,
       setAccount,
       enqueueSnackbar,
+      accounts,
     }) => {
+      if (!_.isEmpty(accounts) && user.id) {
+        return <Redirect to="/page-4" />;
+      }
       const [loading, setLoading] = useState(false);
       const reduxForm = { ...user, ...account };
       const classes = useStyles();

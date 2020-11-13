@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/styles";
 import { push } from "connected-react-router";
 import React, { useRef } from "react";
 import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 import Form from "./components/Form";
 import { ACTIONS } from "./utils/actions";
 import { form, steps } from "./utils/helpers";
@@ -23,6 +24,9 @@ export default connect(
     push: (to, state) => dispatch(push(to, state)),
   })
 )(({ user, setUser, push }) => {
+  if (user.id) {
+    return <Redirect to="/page-2" />;
+  }
   const classes = useStyles();
   const ref = useRef();
   const onNext = () => {
