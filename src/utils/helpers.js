@@ -1,3 +1,5 @@
+import Axios from "axios";
+
 export const exportToJson = (objectData) => {
   let filename = "export.json";
   let contentType = "application/json;charset=utf-8;";
@@ -24,14 +26,14 @@ export const exportToJson = (objectData) => {
 
 export const form = [
   {
-    first_name: {
+    firstName: {
       type: "string",
       required: true,
       read_only: false,
       label: "First name",
       max_length: 30,
     },
-    last_name: {
+    lastName: {
       type: "string",
       required: true,
       read_only: false,
@@ -62,7 +64,7 @@ export const form = [
       read_only: false,
       label: "State",
     },
-    zip_code: {
+    zipCode: {
       type: "string",
       required: true,
       read_only: false,
@@ -76,14 +78,14 @@ export const form = [
     },
   },
   {
-    phone_number: {
+    phoneNumber: {
       type: "string",
       required: true,
       read_only: false,
       label: "Phone number",
       max_length: 128,
     },
-    type: {
+    accountType: {
       type: "choice",
       required: true,
       read_only: false,
@@ -117,12 +119,6 @@ export const form = [
       read_only: false,
       label: "Current Company",
     },
-    dob: {
-      type: "date",
-      required: true,
-      read_only: false,
-      label: "Date of Birth",
-    },
   },
 ];
 export const isMultiline = new Set(["address"]);
@@ -133,3 +129,11 @@ export function validateEmail(email) {
 }
 
 export const steps = ["Personal Details", "Account Details"];
+
+export const addAccount = (userId, data) => {
+  return Axios.post(`http://localhost:8080/account/${userId}`, data, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};

@@ -1,6 +1,7 @@
 export const ACTIONS = {
   APP: {
-    FORM: "FORM",
-    DELETE_FORM: "DELETE_FORM",
+    USER: "USER",
+    ACCOUNTS: "ACCOUNTS",
+    ACCOUNT: "ACCOUNT",
   },
 };

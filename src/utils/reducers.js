@@ -5,15 +5,19 @@ import { ACTIONS } from "./actions";
 
 const app = (
   state = {
-    form: {},
+    user: {},
+    accounts: [],
+    account: {},
   },
   action
 ) => {
   switch (action.type) {
-    case ACTIONS.APP.FORM:
-      return { ...state, form: action.data };
-    case ACTIONS.APP.DELETE_FORM:
-      return { form: {} };
+    case ACTIONS.APP.USER:
+      return { ...state, user: action.data };
+    case ACTIONS.APP.ACCOUNTS:
+      return { ...state, accounts: action.data };
+    case ACTIONS.APP.ACCOUNT:
+      return { ...state, account: action.data };
 
     default:
       return state;

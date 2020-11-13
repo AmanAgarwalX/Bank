@@ -1,11 +1,11 @@
-import { applyMiddleware, createStore } from "redux";
 import { routerMiddleware } from "connected-react-router";
-import { createRootReducer } from "./reducers";
-import { createMigrate, persistStore, persistReducer } from "redux-persist";
 import storage from "localforage";
-import thunk from "redux-thunk";
-import logger from "redux-logger";
+import { applyMiddleware, createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
+import logger from "redux-logger";
+import { createMigrate, persistReducer, persistStore } from "redux-persist";
+import thunk from "redux-thunk";
+import { createRootReducer } from "./reducers";
 
 let createHistory = require("history").createBrowserHistory;
 const history = createHistory();

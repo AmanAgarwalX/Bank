@@ -1,10 +1,13 @@
 import { Button, Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
+import Axios from "axios";
 import { push } from "connected-react-router";
 import { withSnackbar } from "notistack";
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
-import { exportToJson, form, steps } from "./utils/helpers";
+import Loading from "./Loading";
+import { ACTIONS } from "./utils/actions";
+import { addAccount, form, steps } from "./utils/helpers";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -53,64 +56,120 @@ const QuestionAnswer = ({ question, answer }) => {
 export default withSnackbar(
   connect(
     (state) => ({
-      reduxForm: state.app.form,
+      user: state.app.user,
+      account: state.app.account,
     }),
     (dispatch) => ({
+      setUser: (data) =>
+        dispatch({
+          type: ACTIONS.APP.USER,
+          data: data,
+        }),
+      setAccounts: (data) =>
+        dispatch({
+          type: ACTIONS.APP.ACCOUNTS,
+          data: data,
+        }),
+      setAccount: (data) =>
+        dispatch({
+          type: ACTIONS.APP.ACCOUNT,
+          data: data,
+        }),
       push: (to, state) => dispatch(push(to, state)),
     })
-  )(({ reduxForm, push, enqueueSnackbar }) => {
-    const classes = useStyles();
-    return (
-      <>
-        <Grid container direction="column" spacing={2}>
-          {[0, 1].map((s) => (
-            <Grid item key={s}>
-              <div style={{ padding: 20 }}>
-                <div style={{ float: "left" }}>
-                  <h3>{steps[s]}</h3>
+  )(
+    ({
+      user,
+      account,
+      push,
+      setUser,
+      setAccounts,
+      setAccount,
+      enqueueSnackbar,
+    }) => {
+      const [loading, setLoading] = useState(false);
+      const reduxForm = { ...user, ...account };
+      const classes = useStyles();
+      if (loading) {
+        return <Loading />;
+      }
+      return (
+        <>
+          <Grid container direction="column" spacing={2}>
+            {[0, 1].map((s) => (
+              <Grid item key={s}>
+                <div style={{ padding: 20 }}>
+                  <div style={{ float: "left" }}>
+                    <h3>{steps[s]}</h3>
+                  </div>
+                  <div style={{ float: "right" }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => push("/page-" + (s + 1))}
+                    >
+                      Edit
+                    </Button>
+                  </div>
                 </div>
-                <div style={{ float: "right" }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => push("/page-" + (s + 1))}
-                  >
-                    Edit
-                  </Button>
-                </div>
-              </div>
-              <br />
-              <Grid container justify="space-evenly">
-                {Object.keys(form[s]).map((key) => (
-                  <Grid item xs={5} key={key} className={classes.grid}>
-                    <br />
-                    <QuestionAnswer
-                      question={form[s][key].label}
-                      answer={reduxForm[key]}
-                    />
-                  </Grid>
-                ))}
+                <br />
+                <Grid container justify="space-evenly">
+                  {Object.keys(form[s]).map((key) => (
+                    <Grid item xs={5} key={key} className={classes.grid}>
+                      <br />
+                      <QuestionAnswer
+                        question={form[s][key].label}
+                        answer={reduxForm[key]}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
               </Grid>
-            </Grid>
-          ))}
-        </Grid>
-        <br />
-        <br />
-        <div style={{ textAlign: "center" }}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              exportToJson(reduxForm);
-              enqueueSnackbar("Form Submitted Successfully", {
-                variant: "success",
-              });
-            }}
-          >
-            Submit
-          </Button>
-        </div>
-      </>
-    );
-  })
+            ))}
+          </Grid>
+          <br />
+          <br />
+          <div style={{ textAlign: "center" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                setLoading(true);
+                Axios.post("http://localhost:8080/user", user, {
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                })
+                  .then((res) => {
+                    setUser(res.data);
+                    addAccount(res.data.id, account).then((res) => {
+                      setAccount({});
+                      setAccounts(res.data);
+                      enqueueSnackbar(
+                        "User and accounts created successfully",
+                        {
+                          variant: "success",
+                        }
+                      );
+                      push("/page-4");
+                    });
+                  })
+                  .catch((e) => {
+                    console.log(e);
+                    enqueueSnackbar("Error in user creation", {
+                      variant: "error",
+                    });
+                  })
+                  .finally(() => {
+                    setLoading(false);
+                  });
+              }}
+            >
+              Submit
+            </Button>
+          </div>
+        </>
+      );
+    }
+  )
 );

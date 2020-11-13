@@ -11,24 +11,24 @@ const useStyles = makeStyles((theme) => {});
 
 export default connect(
   (state) => ({
-    reduxForm: state.app.form,
+    user: state.app.user,
   }),
   (dispatch) => ({
-    setForm: (data) =>
+    setUser: (data) =>
       dispatch({
-        type: ACTIONS.APP.FORM,
+        type: ACTIONS.APP.USER,
         data: data,
       }),
 
     push: (to, state) => dispatch(push(to, state)),
   })
-)(({ reduxForm, setForm, push }) => {
+)(({ user, setUser, push }) => {
   const classes = useStyles();
   const ref = useRef();
   const onNext = () => {
     let data = ref.current?.getFormData();
     if (data) {
-      setForm(data);
+      setUser(data);
       push("/page-2");
     }
   };
@@ -42,7 +42,7 @@ export default connect(
       >
         <h3>{steps[0]}</h3>
       </div>
-      <Form ref={ref} fields={form[0]} defaultValues={reduxForm} />
+      <Form ref={ref} fields={form[0]} defaultValues={user} />
 
       <div
         style={{
