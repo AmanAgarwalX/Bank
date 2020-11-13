@@ -131,9 +131,13 @@ export function validateEmail(email) {
 export const steps = ["Personal Details", "Account Details"];
 
 export const addAccount = (userId, data) => {
-  return Axios.post(`http://localhost:8080/account/${userId}`, data, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return Axios.post(
+    `https://frozen-cove-32481.herokuapp.com/account/${userId}`,
+    data,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 };

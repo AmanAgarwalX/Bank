@@ -135,11 +135,15 @@ export default withSnackbar(
               color="primary"
               onClick={() => {
                 setLoading(true);
-                Axios.post("http://localhost:8080/user", user, {
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                })
+                Axios.post(
+                  "https://frozen-cove-32481.herokuapp.com/user",
+                  user,
+                  {
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                  }
+                )
                   .then((res) => {
                     setUser(res.data);
                     addAccount(res.data.id, account).then((res) => {
